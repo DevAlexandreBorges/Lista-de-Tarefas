@@ -5,3 +5,5 @@ A funcionalidade desse projeto está no usuário conseguir adicionar tarefas par
 Essa aplicação utiliza o JavaScript puro para execução das funções de adicionar como na inserção de Elementos HMTL.
 
 Nessa aplicação é possível que o usuário tenha suas Tarefas armazenadas e que podem ser consultadas mesmo se a Janela do Navegador for fechada. Isso acontece por conta do "localStorage" do próprio Browser.
+
+As Tarefas possuem um timeStamp definido quando adicionadas à lista e serão apagadas quando der 24 hora do adicionameneto delas ou quando forem marcadas como feitas.

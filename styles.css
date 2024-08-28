@@ -62,6 +62,7 @@ main #todo-form button {
   border: 1px solid black;
   border-radius: 15px;
   cursor: pointer;
+  color: black;
 }
 
 main section #todo-list li {

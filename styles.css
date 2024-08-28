@@ -7,17 +7,26 @@
 body {
   background-color: #f1efef;
   height: 100vh;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+body #current-time {
+  font-size: 22px;
+  margin-bottom: 1rem;
+  font-weight: 900;
+}
+
 main {
-  background-color: rgb(184, 116, 140);
+  background-color: #dfa3b8;
   width: 400px;
   height: auto;
   border-radius: 10px;
   border: 2px solid black;
+  margin-bottom: 2rem;
 
   display: flex;
   flex-direction: column;
@@ -40,6 +49,8 @@ main #todo-form input {
   padding: 0 0.5rem;
   background-color: white;
   font-size: 18px;
+  border: 1px solid black;
+  border-radius: 15px;
 }
 
 main #todo-form button {
@@ -47,6 +58,10 @@ main #todo-form button {
   padding: 0 1rem;
   margin-left: 0.6rem;
   font-weight: 500;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 15px;
+  cursor: pointer;
 }
 
 main section #todo-list li {
@@ -57,10 +72,22 @@ main section #todo-list li {
 
 main section #todo-list li span {
   font-size: 22px;
+  font-weight: 900;
 }
 
+main section #todo-list li input {
+  cursor: pointer;
+}
 main section #todo-list li button {
   border-radius: 10px;
   padding: 0 0.5rem;
   border: 2px solid black;
+  cursor: pointer;
+  color: black;
+}
+
+@media (max-width: 400px) {
+  main {
+    width: 380px;
+  }
 }

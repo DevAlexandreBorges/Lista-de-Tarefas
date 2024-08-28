@@ -1,8 +1,25 @@
 const form = document.querySelector("#todo-form");
 const taskTitleInput = document.querySelector("#task-title-input");
 const todoListUl = document.querySelector("#todo-list");
+const currentTimeElement = document.querySelector("#current-time");
 
 let tasks = []; // A tarefa será guardada primeira no array e depois inserida como elemento no HTML
+
+// função de mostrar a hora atual
+function updateCurrentTime() {
+  const now = new Date();
+  const formatterTime = now.toLocaleTimeString("pt-br", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+  currentTimeElement.textContent = `Horário atual: ${formatterTime} `;
+}
+
+setInterval(updateCurrentTime, 1000); //atualiza a cada 1 segundo
+
+updateCurrentTime();
+
 function renderTask(taskTitle, done = false) {
   const li = document.createElement("li");
   // adiciona o array para ser um elemento HMTL, no caso um li
@@ -16,7 +33,7 @@ function renderTask(taskTitle, done = false) {
 
     if (done) {
       toggleSpan.style.textDecoration = "line-through";
-      toggleSpan.style.color = "#999";
+      toggleSpan.style.color = "#888";
       // alert("Parabéns por ter concluido sua Tarefa Diária!!!!!!");
     } else {
       toggleSpan.style.textDecoration = "none";
@@ -42,7 +59,7 @@ function renderTask(taskTitle, done = false) {
 
   if (done) {
     span.style.textDecoration = "line-through";
-    span.style.color = "#999";
+    span.style.color = "#888";
     // alert("Parabens por ter concluido sua Tarefa Diária!!!!!!");
   }
 
@@ -67,17 +84,44 @@ function renderTask(taskTitle, done = false) {
   todoListUl.appendChild(li);
 }
 
-window.onload = () => {
-  const getTaskfromLocal = localStorage.getItem("tasks");
+// função de checar o horario que foi inserida a tarefa
 
-  if (!getTaskfromLocal) return;
+function checkAndRemoveTasks() {
+  const now = new Date().getTime();
 
-  tasks = JSON.parse(getTaskfromLocal);
+  tasks = tasks.filter((t) => {
+    const verificaTime = now - t.timestamp > 24 * 60 * 60 * 1000;
 
-  tasks.forEach((t) => {
-    renderTask(t.title, t.done);
+    if (verificaTime) {
+      document.querySelector(`li: contains${t.title}`)?.remove();
+    }
+    return !verificaTime;
   });
-};
+
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// renderiza na tela
+
+function renderaAllTasks() {
+  todoListUl.innerHTML = "";
+
+  tasks.forEach((t) => renderTask(t.title, t.done));
+}
+
+// ! foi substituida, ficará no código para manuntenção possivel
+
+// window.onload = () => {
+//   const getTaskfromLocal = localStorage.getItem("tasks");
+
+//   if (!getTaskfromLocal) return;
+
+//   tasks = JSON.parse(getTaskfromLocal);
+
+//   tasks.forEach((t) => {
+//     renderTask(t.title, t.done);
+//   });
+// };
 
 form.addEventListener("submit", (event) => {
   event.preventDefault(); //evita que a página recarregue
@@ -85,17 +129,35 @@ form.addEventListener("submit", (event) => {
   const taskTitle = taskTitleInput.value;
 
   if (taskTitle.length < 4) {
-    alert("Sua tarefa precisa ter, pelo menos 4 letras..");
+    alert(
+      "Não é possível inserir uma tarefa menor que 4 letras ou enviar sem escrita...."
+    );
     return; //caso não tiver o requisíto mínimo o return serve para parar o restante do script.
   }
+
+  const now = new Date(); // adicionado para captar a data do adicionamento
 
   //Adiciona a tarefa no array
   tasks.push({
     title: taskTitle,
     done: false,
+    timestamp: now.getTime(), // adiciona no array o horário que foi coletada a informação
   });
 
   localStorage.setItem("tasks", JSON.stringify(tasks));
   renderTask(taskTitle);
   taskTitleInput.value = ""; //apaga o conteúdo que estava no input
 });
+
+//substitui o antigo window.onload para conseguir tb registrar o timestamp
+window.onload = () => {
+  const getTaskfromLocal = localStorage.getItem("tasks");
+
+  if (getTaskfromLocal) {
+    tasks = JSON.parse(getTaskfromLocal);
+    renderaAllTasks();
+  }
+
+  checkAndRemoveTasks();
+  setInterval(checkAndRemoveTasks, 60 * 60 * 1000);
+};
